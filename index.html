@@ -56,7 +56,7 @@
       stave.addClef("treble").setContext(context).draw();
 
       const vfNote = new VF.StaveNote({ clef: "treble", keys: [note.toLowerCase() + "/4"], duration: "q" });
-      vfNote.addAccidental(0, null);
+      
 
       VF.Formatter.FormatAndDraw(context, stave, [vfNote]);
     }
