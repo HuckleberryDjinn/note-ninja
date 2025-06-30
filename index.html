@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Note Ninja - Learn Musical Notes</title>
+  <script src="https://unpkg.com/vexflow/releases/vexflow-min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    #noteCanvas {
+      margin: 20px auto;
+    }
+    input[type="text"] {
+      font-size: 1.2em;
+      padding: 5px;
+    }
+    button {
+      padding: 8px 12px;
+      font-size: 1em;
+      margin-top: 10px;
+    }
+    #feedback {
+      font-size: 1.2em;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎵 Note Ninja 🎵</h1>
+  <canvas id="noteCanvas" width="300" height="150"></canvas>
+  <div>
+    <input type="text" id="noteInput" placeholder="Enter note (A-G)" maxlength="1" />
+    <button onclick="checkAnswer()">Submit</button>
+  </div>
+  <div id="feedback"></div>
+  <script>
+    const VF = Vex.Flow;
+    const notes = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
+    let currentNote = '';
+
+    function getRandomNote() {
+      return notes[Math.floor(Math.random() * notes.length)];
+    }
+
+    function drawNote(note) {
+      const div = document.getElementById("noteCanvas");
+      const renderer = new VF.Renderer(div, VF.Renderer.Backends.CANVAS);
+      const context = renderer.getContext();
+      context.clearRect(0, 0, div.width, div.height);
+
+      const stave = new VF.Stave(10, 40, 280);
+      stave.addClef("treble").setContext(context).draw();
+
+      const vfNote = new VF.StaveNote({ clef: "treble", keys: [note.toLowerCase() + "/4"], duration: "q" });
+      vfNote.addAccidental(0, null);
+
+      VF.Formatter.FormatAndDraw(context, stave, [vfNote]);
+    }
+
+    function newNote() {
+      currentNote = getRandomNote();
+      drawNote(currentNote);
+      document.getElementById("noteInput").value = '';
+      document.getElementById("feedback").innerText = '';
+    }
+
+    function checkAnswer() {
+      const userInput = document.getElementById("noteInput").value.toUpperCase();
+      const feedback = document.getElementById("feedback");
+      if (userInput === currentNote) {
+        feedback.innerText = '✅ Correct!';
+        setTimeout(newNote, 1000);
+      } else {
+        feedback.innerText = '❌ Try again!';
+      }
+    }
+
+    newNote();
+  </script>
+</body>
+</html>
